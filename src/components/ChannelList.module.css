@@ -1,0 +1,20 @@
+table {
+    border-spacing: 0;
+}
+th, td {
+    align-content: start;
+    padding: 4px 10px;
+}
+
+.category td:not(.channelPosition){
+    border-top: 2px solid #ccc;
+    background: linear-gradient(to bottom, #ccc 10%, #fff 90%);
+}
+
+textarea {
+    width: 50rem;
+}
+
+.dragOver td{
+    border-bottom: 2px solid #8f8;
+}

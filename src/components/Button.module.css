@@ -1,0 +1,33 @@
+:root { /* default */
+    --button-bg-color: #56aafb;
+    --button-hover-bg-color: #2b88e3;
+    --button-fg-color: #fff;
+}
+
+.button {
+    background-color: var(--button-bg-color);
+    color: var(--button-fg-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition:
+            background-color 0.3s ease,
+            transform 0.3s ease;
+}
+
+.button:hover {
+    background-color: var(--button-hover-bg-color);
+}
+
+.secondary {
+    --button-bg-color: #ccc;
+    --button-hover-bg-color: #aaa;
+    --button-fg-color: #333;
+}
+
+.danger {
+    --button-bg-color: #be281d;
+    --button-hover-bg-color: #a52219;
+    --button-fg-color: #fff;
+}
