@@ -57,16 +57,12 @@ export default function ChannelList() {
      * @param dropIndex New popsition (index) of the channel
      */
     function handleDrop(dropIndex: number) {
-        console.log("New index (before check)", dropIndex)
-        setChannels(prev => {
-            if (dragIndex === null) return prev
-            const copy = [...prev] // make a copy of the array to prevent chaning the original list
-            const [moved] = copy.splice(dragIndex, 1) // remove channel from old position
-            if (dropIndex - dragIndex <= 0) dropIndex++
-            console.log("Original index", dragIndex)
-            console.log("rechnung ", dropIndex - dragIndex)
-            console.log("New index after check", dropIndex)
-            copy.splice(dropIndex, 0, moved) // paste channel to new position
+        if (dragIndex === null) return channels
+        const copy = [...channels] // make a copy of the array to prevent chaning the original list
+        const [moved] = copy.splice(dragIndex, 1) // remove channel from old position
+        if (dropIndex - dragIndex <= 0) dropIndex++
+        copy.splice(dropIndex, 0, moved) // paste channel to new position
+        setChannels(() => {
             return copy.map((c, i) => ({...c, position: i})) // redistribute positions
         })
         setDragIndex(null)
