@@ -1,11 +1,13 @@
 import './App.css'
-import ChannelList from "./components/ChannelList.tsx";
+import { Outlet } from "react-router"
 
 function App() {
 
   return (
       <>
-        <ChannelList/>
+        <main>
+            <Outlet />
+        </main>
       </>
   )
 }

@@ -1,32 +1,21 @@
 import styles from "./ChannelList.module.css"
-import Button from "./Button.tsx";
+import Button from "../components/Button.tsx";
 import {useEffect, useState} from "react";
-import ChannelService from "../services/ChannelService.ts";
-
-/**
- * Represents the structure of a channel
- * <p>
- * Should be the same as the DTO in the backend
- */
-export interface Channel {
-    id: string | null
-    position: number
-    name: string
-    type: string
-    topic: string | null
-}
+import ChannelService, {type Channel} from "../services/ChannelService.ts";
 
 const CHANNEL_TYPES = ["TEXT", "VOICE", "CATEGORY", "FORUM", "STAGE", "NEWS"]
 
-export default function ChannelList() {
+const channelService: ChannelService = new ChannelService()
+
+const guildId = "1004035867679129662"
+export default function ChannelListRoute() {
 
     const [channels, setChannels] = useState<Channel[]>([])
     // Index of the channel being dragged, null beeing none draged
     const [dragIndex, setDragIndex] = useState<number | null>(null)
 
     useEffect(() => {
-        const channelService = new ChannelService()
-        channelService.getChannels("1004035867679129662").then((channels: Channel[]) => {
+        channelService.getChannels(guildId).then((channels: Channel[]) => {
             return setChannels(channels || []);
         })
     }, [])
@@ -66,6 +55,14 @@ export default function ChannelList() {
             return copy.map((c, i) => ({...c, position: i})) // redistribute positions
         })
         setDragIndex(null)
+    }
+
+    /**
+     * Submit channels to discord
+     */
+    function handleSubmit() {
+        console.log("Submit channels")
+        channelService.updateChannels(guildId, channels)
     }
 
     return (
@@ -143,6 +140,7 @@ export default function ChannelList() {
                 <tr>
                     <td colSpan={4}>
                         <Button onClick={addChannel}>Kanal hinzufügen</Button>
+                        <Button onClick={handleSubmit}>Speichern</Button>
                     </td>
                 </tr>
             </tfoot>
