@@ -1,5 +1,6 @@
 import styles from "./ChannelList.module.css"
-import Button from "../components/Button.tsx";
+import Button from "../components/Button.tsx"
+import Input from "../components/TextInput.tsx"
 import {useEffect, useState} from "react";
 import ChannelService, {type Channel, type ProgressEvent} from "../services/ChannelService.ts";
 
@@ -13,6 +14,11 @@ export default function ChannelListRoute() {
     const [channels, setChannels] = useState<Channel[]>([])
     // Index of the channel being dragged, null beeing none draged
     const [dragIndex, setDragIndex] = useState<number | null>(null)
+
+    /** The progress of the current save operation */
+    const [progress, setProgress] = useState<ProgressEvent | null>(null)
+    /** Whether the channels are being saved currently */
+    const [isSaving, setIsSaving] = useState(false)
 
     useEffect(() => {
         channelService.getChannels(guildId).then((channels: Channel[]) => {
@@ -101,8 +107,6 @@ export default function ChannelListRoute() {
     /**
      * Submit channels to discord
      */
-    const [progress, setProgress] = useState<ProgressEvent | null>(null)
-    const [isSaving, setIsSaving] = useState(false)
 
     function handleSubmit() {
         const normalized = recalcPositions(channels)
@@ -113,10 +117,14 @@ export default function ChannelListRoute() {
             guildId,
             normalized,
             (event) => setProgress(event),
-            () => setIsSaving(false),
+            () => {
+                setIsSaving(false)
+                navigation.reload()
+            },
             (message) => {
                 console.error(message)
                 setIsSaving(false)
+                navigation.reload()
             }
         )
     }
@@ -173,12 +181,13 @@ export default function ChannelListRoute() {
 
                             </td>
                             <td>
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Kanalname"
                                     value={channel.name}
                                     onChange={e => updateChannel(channel.id, {name: e.target.value})}
                                     required
+                                    inputAtHover
                                 />
                             </td>
                             <td>
@@ -196,7 +205,7 @@ export default function ChannelListRoute() {
                 <tr>
                     <td colSpan={4}>
                         <Button onClick={addChannel}>Kanal hinzufügen</Button>
-                        <Button onClick={handleSubmit}>Speichern</Button>
+                        <Button onClick={handleSubmit} disabled={isSaving}>Speichern</Button>
                         {isSaving && progress && (
                             <p>{progress.message} ({progress.current}/{progress.total})</p>
                         )}
