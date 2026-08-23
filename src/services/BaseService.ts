@@ -44,4 +44,61 @@ export default class BaseService {
             console.error(error.message);
         }
     }
+
+    /**
+     * Sendet einen Request und liest die Antwort als Server-Sent-Events-Stream.
+     * Ruft onEvent für jedes empfangene Event auf.
+     */
+    async fetchStream(
+        endpoint: string,
+        method: string,
+        body: any,
+        onEvent: (eventName: string, data: any) => void
+    ): Promise<void> {
+        const response = await fetch(this.baseUrl + "/" + this.serviceUri + "/" + endpoint, {
+            method,
+            headers: {
+                "content-type": "application/json",
+                "accept": "text/event-stream"
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok || !response.body) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, {stream: true});
+
+            // SSE-Events sind durch eine Leerzeile getrennt
+            let boundary;
+            while ((boundary = buffer.indexOf("\n\n")) !== -1) {
+                const rawEvent = buffer.slice(0, boundary);
+                buffer = buffer.slice(boundary + 2);
+
+                let eventName = "message";
+                let data = "";
+                for (const line of rawEvent.split("\n")) {
+                    if (line.startsWith("event:")) eventName = line.slice(6).trim();
+                    if (line.startsWith("data:")) data += line.slice(5).trim();
+                }
+
+                if (data) {
+                    try {
+                        onEvent(eventName, JSON.parse(data));
+                    } catch {
+                        onEvent(eventName, data);
+                    }
+                }
+            }
+        }
+    }
 }

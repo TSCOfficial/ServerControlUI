@@ -1,7 +1,7 @@
 import styles from "./ChannelList.module.css"
 import Button from "../components/Button.tsx";
 import {useEffect, useState} from "react";
-import ChannelService, {type Channel} from "../services/ChannelService.ts";
+import ChannelService, {type Channel, type ProgressEvent} from "../services/ChannelService.ts";
 
 const CHANNEL_TYPES = ["TEXT", "VOICE", "CATEGORY", "FORUM", "STAGE", "NEWS"]
 
@@ -26,7 +26,12 @@ export default function ChannelListRoute() {
      * @param patch Changed fields
      */
     function updateChannel(id: string | null, patch: Partial<Channel>) {
-        setChannels(prev => prev.map(channel => (channel.id === id ? {...channel, ...patch} : channel)))
+        setChannels(prev => {
+            const updated = prev.map(channel =>
+                channel.id === id ? { ...channel, ...patch } : channel
+            )
+            return recalcPositions(updated)
+        })
     }
 
     /**
@@ -35,8 +40,45 @@ export default function ChannelListRoute() {
     function addChannel() {
         setChannels(prev => [
             ...prev,
-            {id: null, position: prev.length, name: "", type: "TEXT", topic: ""},
+            {id: null, position: prev.length, name: "", type: "TEXT", topic: "", parentId: null},
         ])
+    }
+
+    type ChannelTypeGroup = "CATEGORY" | "TEXT_LIKE" | "VOICE_LIKE"
+
+    /**
+     * Discord handles channel types that are similar, as a group, for some functions such as position calculation.
+     * @param type
+     */
+    function getTypeGroup(type: string): ChannelTypeGroup {
+        if (type === "CATEGORY") return "CATEGORY"
+        if (type === "TEXT" || type === "NEWS" || type === "FORUM") return "TEXT_LIKE"
+        // VOICE, STAGE
+        return "VOICE_LIKE"
+    }
+
+    function recalcPositions(list: Channel[]): Channel[] {
+        const counters: Record<ChannelTypeGroup, number> = {
+            CATEGORY: 0,
+            TEXT_LIKE: 0,
+            VOICE_LIKE: 0,
+        }
+
+        let currentCategoryId: string | null = null
+
+        const updatedChannels: Channel[] = list.map(channel => {
+            const group = getTypeGroup(channel.type)
+
+            if (group === "CATEGORY") {
+                currentCategoryId = channel.id
+                console.log("Set category id to ", currentCategoryId)
+            }
+            console.log("Channel's parent is ", channel.parentId)
+            const position = counters[group]
+            counters[group] = position + 1
+            return { ...channel, position, categoryId: currentCategoryId}
+        })
+        return updatedChannels
     }
 
     /**
@@ -51,18 +93,29 @@ export default function ChannelListRoute() {
         const [moved] = copy.splice(dragIndex, 1) // remove channel from old position
         if (dropIndex - dragIndex <= 0) dropIndex++
         copy.splice(dropIndex, 0, moved) // paste channel to new position
-        setChannels(() => {
-            return copy.map((c, i) => ({...c, position: i})) // redistribute positions
-        })
+        setChannels(recalcPositions(copy))
         setDragIndex(null)
     }
 
     /**
      * Submit channels to discord
      */
+    const [progress, setProgress] = useState<ProgressEvent | null>(null)
+    const [isSaving, setIsSaving] = useState(false)
+
     function handleSubmit() {
-        console.log("Submit channels")
-        channelService.updateChannels(guildId, channels)
+        setIsSaving(true)
+        setProgress(null)
+        channelService.updateChannels(
+            guildId,
+            channels,
+            (event) => setProgress(event),
+            () => setIsSaving(false),
+            (message) => {
+                console.error(message)
+                setIsSaving(false)
+            }
+        )
     }
 
     return (
@@ -141,6 +194,9 @@ export default function ChannelListRoute() {
                     <td colSpan={4}>
                         <Button onClick={addChannel}>Kanal hinzufügen</Button>
                         <Button onClick={handleSubmit}>Speichern</Button>
+                        {isSaving && progress && (
+                            <p>{progress.message} ({progress.current}/{progress.total})</p>
+                        )}
                     </td>
                 </tr>
             </tfoot>
