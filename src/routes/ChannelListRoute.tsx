@@ -68,15 +68,16 @@ export default function ChannelListRoute() {
 
         const updatedChannels: Channel[] = list.map(channel => {
             const group = getTypeGroup(channel.type)
+            const position = counters[group]
+            counters[group] = position + 1
 
             if (group === "CATEGORY") {
                 currentCategoryId = channel.id
-                console.log("Set category id to ", currentCategoryId)
+                return { ...channel, position, parentId: null } // Kategorien haben nie einen Parent
             }
             console.log("Channel's parent is ", channel.parentId)
-            const position = counters[group]
-            counters[group] = position + 1
-            return { ...channel, position, categoryId: currentCategoryId}
+
+            return { ...channel, position, parentId: currentCategoryId}
         })
         return updatedChannels
     }
@@ -104,11 +105,13 @@ export default function ChannelListRoute() {
     const [isSaving, setIsSaving] = useState(false)
 
     function handleSubmit() {
+        const normalized = recalcPositions(channels)
+        setChannels(normalized)
         setIsSaving(true)
         setProgress(null)
         channelService.updateChannels(
             guildId,
-            channels,
+            normalized,
             (event) => setProgress(event),
             () => setIsSaving(false),
             (message) => {
