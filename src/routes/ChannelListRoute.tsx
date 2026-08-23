@@ -22,6 +22,10 @@ export default function ChannelListRoute() {
 
     useEffect(() => {
         channelService.getChannels(guildId).then((channels: Channel[]) => {
+            if (channels === undefined || channels.length === 0){
+                window.alert("No channels found");
+            }
+            console.log("Channels", channels.length)
             return setChannels(channels || []);
         })
     }, [])

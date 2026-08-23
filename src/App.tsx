@@ -1,6 +1,7 @@
 import './App.css'
 import { Outlet } from "react-router"
 import Header from "./components/Header.tsx";
+import Toast from "./components/Toast.tsx";
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
       <>
           <Header />
         <main>
+            <Toast/>
             <Outlet />
         </main>
       </>

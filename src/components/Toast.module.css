@@ -1,0 +1,12 @@
+.toast {
+    display: none;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #ccc;
+}
+.toast.show {
+    display: block;
+}
