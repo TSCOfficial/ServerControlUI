@@ -1,0 +1,38 @@
+
+/* GENERAL SETTINGS */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+}
+
+#root {
+    display: grid;
+    grid-template-areas:
+            "header header"
+            "navigation main"
+            "footer footer";
+    grid-template-columns: 4rem auto;
+}
+
+header {
+    grid-area: header;
+}
+main {
+    grid-area: main;
+}
+nav {
+    grid-area: navigation;
+}
+footer {
+    grid-area: footer;
+}
+
+h1 {
+    margin: 0;
+}
