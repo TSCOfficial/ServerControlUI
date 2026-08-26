@@ -11,13 +11,14 @@ body {
     font-optical-sizing: auto;
 }
 
-#root {
+#root { /* todo fix grid */
     display: grid;
     grid-template-areas:
             "header header"
             "navigation main"
             "footer footer";
-    grid-template-columns: 4rem auto;
+    grid-template-columns: 16rem auto;
+    grid-template-rows: auto auto auto;
 }
 
 header {

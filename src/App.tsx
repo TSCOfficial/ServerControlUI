@@ -8,10 +8,10 @@ function App() {
   return (
       <>
           <Header />
-        <main>
-            <Toast/>
-            <Outlet />
-        </main>
+          <main>
+              <Toast/>
+              <Outlet />
+          </main>
       </>
   )
 }

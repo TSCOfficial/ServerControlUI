@@ -1,0 +1,31 @@
+.label {
+    padding: .1rem .3rem;
+    color: black;
+    border-radius: .25rem;
+    font-size: 1rem;
+    opacity: .6;
+}
+
+.label.primary {
+    background-color: #007bff;
+    color: white;
+}
+.label.secondary {
+    background-color: #6c757d;
+    color: white;
+}
+.label.danger {
+    background-color: #dc3545;
+    color: white;
+}
+.label.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.label.small {
+    font-size: .8rem;
+}
+.label.large {
+    font-size: 1.2rem;
+}

@@ -1,8 +1,9 @@
 import styles from "./ChannelList.module.css"
 import Button from "../components/Button.tsx"
-import Input from "../components/TextInput.tsx"
+import TextInput from "../components/TextInput.tsx"
 import {useEffect, useState} from "react";
 import ChannelService, {type Channel, type ProgressEvent} from "../services/ChannelService.ts";
+import Label from "../components/Label.tsx";
 
 const CHANNEL_TYPES = ["TEXT", "VOICE", "CATEGORY", "FORUM", "STAGE", "NEWS"]
 
@@ -85,7 +86,6 @@ export default function ChannelListRoute() {
                 currentCategoryId = channel.id
                 return { ...channel, position, parentId: null } // Kategorien haben nie einen Parent
             }
-            console.log("Channel's parent is ", channel.parentId)
 
             return { ...channel, position, parentId: currentCategoryId}
         })
@@ -137,7 +137,6 @@ export default function ChannelListRoute() {
         <table>
             <thead>
                 <tr>
-                    <th>Position</th>
                     <th>Type</th>
                     <th>Name</th>
                     <th>Topic</th>
@@ -145,10 +144,12 @@ export default function ChannelListRoute() {
             </thead>
             <tbody>
                 {
-                    channels.map((channel, index) => (
+                    channels.map((channel, index) => {
+                        const isCategory = channel.type === "CATEGORY";
+                        return (
                         <tr
                             key={channel.id}
-                            className={channel.type === "CATEGORY" ? styles.category : ""}
+                            className={isCategory ? styles.category : ""}
                             draggable
                             onDragStart={() => {
                                 setDragIndex(index)
@@ -168,11 +169,10 @@ export default function ChannelListRoute() {
                                 }
                             }
                         >
-                            <td className={styles.channelPosition}>{channel.position}</td>
                             <td>
                                 {
                                     channel.id !== null
-                                    ? channel.type
+                                    ? <Label type={isCategory ? "primary" : "secondary"}>{channel.type}</Label>
                                     : <select
                                             value={channel.type}
                                             onChange={e => updateChannel(channel.id, {type: e.target.value})}
@@ -185,8 +185,8 @@ export default function ChannelListRoute() {
 
                             </td>
                             <td>
-                                <Input
-                                    type="text"
+                                <TextInput
+                                    type="short"
                                     placeholder="Kanalname"
                                     value={channel.name}
                                     onChange={e => updateChannel(channel.id, {name: e.target.value})}
@@ -195,19 +195,22 @@ export default function ChannelListRoute() {
                                 />
                             </td>
                             <td>
-                                <textarea
-                                    placeholder="Kanalbeschreibung"
+                                <TextInput
+                                    type="paragraph"
+                                    placeholder="Kanalbeschreibung hinzufügen"
                                     value={channel.topic ? channel.topic : ""}
                                     onChange={e => updateChannel(channel.id, {topic: e.target.value})}
+                                    inputAtHover
+                                    disabled={isCategory}
                                 />
                             </td>
                         </tr>
-                    ))
+                    )})
                 }
             </tbody>
             <tfoot>
                 <tr>
-                    <td colSpan={4}>
+                    <td colSpan={4} className={styles.actionrow}>
                         <Button onClick={addChannel}>Kanal hinzufügen</Button>
                         <Button onClick={handleSubmit} disabled={isSaving}>Speichern</Button>
                         {isSaving && progress && (

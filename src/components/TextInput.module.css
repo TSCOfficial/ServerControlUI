@@ -1,10 +1,30 @@
-.textInput {
+.textInput,
+.inputAtHover:hover {
   width: 100%;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
+  height: 2rem;
+  background-color: #f5f5f5;
 }
 
 .inputAtHover {
-  border-color: #0070f3;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.textarea {
+  max-width: 100%;
+  max-height: 10rem;
+  min-height: 2rem;
+  min-width: 75%;
+}
+
+.textInput:not(.inputAtHover):disabled,
+.textarea:not(.inputAtHover):disabled,
+.inputAtHover:disabled:hover{
+  background-color: #f5f5f5;
+  border-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
 }

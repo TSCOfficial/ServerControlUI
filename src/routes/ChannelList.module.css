@@ -1,20 +1,26 @@
 table {
     border-spacing: 0;
 }
+tr {
+    display: grid;
+    grid-template-columns: minmax(4rem, 8rem) minmax(6rem, 15rem) 28rem;
+}
 th, td {
     align-content: start;
     padding: 4px 10px;
+    text-align: left;
 }
 
 .category td:not(.channelPosition){
-    border-top: 2px solid #ccc;
-    background: linear-gradient(to bottom, #ccc 10%, #fff 90%);
-}
-
-textarea {
-    width: 50rem;
+    border-top: 3px solid #ccc;
+    background-color: #eee;
 }
 
 .dragOver td{
     border-bottom: 2px solid #8f8;
+}
+
+.actionrow {
+    display: flex;
+    gap: 1rem;
 }
