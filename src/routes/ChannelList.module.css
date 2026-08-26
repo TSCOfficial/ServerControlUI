@@ -6,7 +6,7 @@ tr {
     grid-template-columns: minmax(4rem, 8rem) minmax(6rem, 15rem) 28rem;
 }
 th, td {
-    align-content: start;
+    align-content: center;
     padding: 4px 10px;
     text-align: left;
 }

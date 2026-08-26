@@ -197,7 +197,7 @@ export default function ChannelListRoute() {
                             <td>
                                 <TextInput
                                     type="paragraph"
-                                    placeholder="Kanalbeschreibung hinzufügen"
+                                    placeholder={!isCategory ? "Kanalbeschreibung hinzufügen" : ""}
                                     value={channel.topic ? channel.topic : ""}
                                     onChange={e => updateChannel(channel.id, {topic: e.target.value})}
                                     inputAtHover
