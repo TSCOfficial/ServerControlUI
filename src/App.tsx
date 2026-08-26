@@ -8,10 +8,12 @@ function App() {
   return (
       <>
           <Header />
+          <nav>No content</nav>
           <main>
               <Toast/>
               <Outlet />
           </main>
+          <footer>No content</footer>
       </>
   )
 }

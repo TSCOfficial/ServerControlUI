@@ -2,7 +2,7 @@
     padding: .1rem .3rem;
     color: black;
     border-radius: .25rem;
-    font-size: 1rem;
+    font-size: 0.75rem;
     opacity: .6;
 }
 
@@ -24,8 +24,8 @@
 }
 
 .label.small {
-    font-size: .8rem;
+    font-size: .5rem;
 }
 .label.large {
-    font-size: 1.2rem;
+    font-size: 1rem;
 }

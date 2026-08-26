@@ -3,7 +3,7 @@ table {
 }
 tr {
     display: grid;
-    grid-template-columns: minmax(4rem, 8rem) minmax(6rem, 15rem) 28rem;
+    grid-template-columns: minmax(2rem, 6rem) minmax(6rem, 15rem) 28rem;
 }
 th, td {
     align-content: center;
@@ -23,4 +23,13 @@ th, td {
 .actionrow {
     display: flex;
     gap: 1rem;
+}
+
+.icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.channelTypeIcon {
+    text-align: right;
 }

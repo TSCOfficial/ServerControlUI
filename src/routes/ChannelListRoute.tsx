@@ -3,7 +3,6 @@ import Button from "../components/Button.tsx"
 import TextInput from "../components/TextInput.tsx"
 import {useEffect, useState} from "react";
 import ChannelService, {type Channel, type ProgressEvent} from "../services/ChannelService.ts";
-import Label from "../components/Label.tsx";
 
 const CHANNEL_TYPES = ["TEXT", "VOICE", "CATEGORY", "FORUM", "STAGE", "NEWS"]
 
@@ -169,10 +168,10 @@ export default function ChannelListRoute() {
                                 }
                             }
                         >
-                            <td>
+                            <td className={styles.channelTypeIcon}>
                                 {
                                     channel.id !== null
-                                    ? <Label type={isCategory ? "primary" : "secondary"}>{channel.type}</Label>
+                                    ? resolveChannelIcon(channel.type)
                                     : <select
                                             value={channel.type}
                                             onChange={e => updateChannel(channel.id, {type: e.target.value})}
@@ -221,4 +220,19 @@ export default function ChannelListRoute() {
             </tfoot>
         </table>
     )
+}
+
+function resolveChannelIcon(type: string) {
+    type = type.toLowerCase()
+    switch (type) {
+        case "text":
+            return (
+                <svg className={styles.icon} aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path fill="currentColor" fill-rule="evenodd" d="M10.99 3.16A1 1 0 1 0 9 2.84L8.15 8H4a1 1 0 0 0 0 2h3.82l-.67 4H3a1 1 0 1 0 0 2h3.82l-.8 4.84a1 1 0 0 0 1.97.32L8.85 16h4.97l-.8 4.84a1 1 0 0 0 1.97.32l.86-5.16H20a1 1 0 1 0 0-2h-3.82l.67-4H21a1 1 0 1 0 0-2h-3.82l.8-4.84a1 1 0 1 0-1.97-.32L15.15 8h-4.97l.8-4.84ZM14.15 14l.67-4H9.85l-.67 4h4.97Z"
+                      clip-rule="evenodd" className=""></path>
+                </svg>
+            );
+        default:
+            return type;
+    }
 }
