@@ -1,14 +1,25 @@
 table {
     border-spacing: 0;
 }
-tr {
-    display: grid;
-    grid-template-columns: minmax(2rem, 6rem) minmax(6rem, 15rem) 28rem;
-}
 th, td {
     align-content: center;
     padding: 4px 10px;
     text-align: left;
+}
+th:nth-of-type(1),
+td:nth-of-type(1) {
+    width: 2rem;
+}
+th:nth-of-type(2),
+td:nth-of-type(2) {
+    width: 16rem;
+}
+th:nth-of-type(3),
+td:nth-of-type(3) {
+    width: 40rem;
+}
+.noChannels {
+    column-span: all;
 }
 
 .category td:not(.channelPosition){

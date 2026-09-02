@@ -11,27 +11,31 @@ body {
     font-optical-sizing: auto;
 }
 
-#root { /* todo fix grid */
+#root {
     display: grid;
     grid-template-areas:
             "header header"
             "navigation main"
             "footer footer";
     grid-template-columns: 16rem auto;
-    grid-template-rows: 64px auto 32px;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
 }
 
 header {
     grid-area: header;
+    height: fit-content;
 }
 main {
     grid-area: main;
+    min-height: 100%;
 }
 nav {
     grid-area: navigation;
 }
 footer {
     grid-area: footer;
+    height: fit-content;
 }
 
 h1 {
