@@ -23,6 +23,8 @@ export default function ChannelListRoute() {
     /** Whether the channels are being saved currently */
     const [isSaving, setIsSaving] = useState(false)
 
+    const [collapsedCategories, setCollapsedCategories] = useState<Channel[]>([])
+
     useEffect(() => {
         channelService.getChannels(guildId).then((channels: Channel[]) => {
             if (channels === undefined || channels.length === 0) {
@@ -135,12 +137,21 @@ export default function ChannelListRoute() {
                 </tr>
             )
         }
-        return channels.map((channel: Channel, index: number) => {
-            const isCategory = channel.type === "CATEGORY";
+        let currentCategory: Channel | null = null;
+
+        return channels.filter(channel => !collapsedCategories.includes(channel) || channel.type === "CATEGORY").map((channel: Channel, index: number) => {
+            let isCategory = false;
+            if (channel.type === "CATEGORY") {
+                isCategory = true;
+                currentCategory = channel;
+            }
+            const rowClasses = isCategory ? styles.category + " " : "" +
+                (currentCategory != null ? currentCategory.id + " " : "")
+
             return (
                 <tr
                     key={channel.id}
-                    className={isCategory ? styles.category : ""}
+                    className={rowClasses}
                     draggable
                     onDragStart={() => {
                         setDragIndex(index)
@@ -186,18 +197,45 @@ export default function ChannelListRoute() {
                         />
                     </td>
                     <td>
-                        <TextInput
-                            type="paragraph"
-                            placeholder={!isCategory ? "Kanalbeschreibung hinzufügen" : ""}
-                            value={channel.topic ? channel.topic : ""}
-                            onChange={e => updateChannel(channel.id, {topic: e.target.value})}
-                            inputAtHover
-                            disabled={isCategory}
-                        />
+                        {
+                            isCategory ? displayCategoryActionRow(channel) : displayChannelTopic(channel)
+                        }
                     </td>
                 </tr>
             )
         })
+    }
+
+    function displayChannelTopic(channel: Channel) {
+        return (
+            <TextInput
+                type="paragraph"
+                placeholder="Kanalbeschreibung hinzufügen"
+                value={channel.topic ? channel.topic : ""}
+                onChange={e => updateChannel(channel.id, {topic: e.target.value})}
+                inputAtHover
+            />
+        )
+    }
+
+    function displayCategoryActionRow(channel: Channel) {
+        onclick = () => {
+            if (channel.id != null) {
+                setCollapsedCategories(prev => prev.includes(channel) ? prev.filter(c => c.id != channel.id) : [...prev, channel])
+                console.log(collapsedCategories)
+                setChannels(channels)
+            }
+
+        }
+        return (
+            <div>
+                <Button secondary onClick={() => onclick}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-up" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
+                    </svg>
+                </Button>
+            </div>
+        )
     }
 
     function resolveChannelIcon(type: string) {
