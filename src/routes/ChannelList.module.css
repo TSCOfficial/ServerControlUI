@@ -19,7 +19,7 @@ td:nth-of-type(3) {
     width: 40rem;
 }
 .noChannels {
-    column-span: all;
+    column-span: 2;
 }
 
 .category td:not(.channelPosition){

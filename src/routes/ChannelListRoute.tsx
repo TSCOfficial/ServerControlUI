@@ -40,7 +40,7 @@ export default function ChannelListRoute() {
     function addChannel() {
         setChannels((prev: Channel[]) => [
             ...prev,
-            {id: null, position: prev.length, name: "", type: "TEXT", topic: "", parentId: null},
+            {id: (Math.random() * 100).toString(), position: prev.length, name: "", type: "TEXT", topic: "", parentId: null, isNew: true},
         ])
     }
 
@@ -131,7 +131,13 @@ export default function ChannelListRoute() {
         if (channels.length == 0) {
             return (
                 <tr>
-                    <td colSpan={3} className={styles.noChannels}>
+                    <td>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" stroke="currentColor" strokeWidth="0" className={styles.icon} viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                            <path d="M11.354 4.646a.5.5 0 0 0-.708 0l-6 6a.5.5 0 0 0 .708.708l6-6a.5.5 0 0 0 0-.708"/>
+                        </svg>
+                    </td>
+                    <td colSpan={2} className={styles.noChannels}>
                         <p>Keine Kanäle gefunden</p>
                     </td>
                 </tr>
@@ -173,9 +179,8 @@ export default function ChannelListRoute() {
                 >
                     <td className={styles.channelTypeIcon}>
                         {
-                            channel.id !== null
-                                ? resolveChannelIcon(channel.type)
-                                : <select
+                            channel.isNew
+                                ? <select
                                     value={channel.type}
                                     onChange={e => updateChannel(channel.id, {type: e.target.value})}
                                 >
@@ -183,6 +188,7 @@ export default function ChannelListRoute() {
                                         <option key={t} value={t}>{t}</option>
                                     ))}
                                 </select>
+                                : resolveChannelIcon(channel.type)
                         }
 
                     </td>
@@ -321,10 +327,10 @@ export default function ChannelListRoute() {
      * @param setChannels
      * @param patch Changed fields
      */
-    function updateChannel(id: string | null, patch: Partial<Channel>) {
+    function updateChannel(internal_id: string, patch: Partial<Channel>) {
         setChannels((prev: Channel[]) => {
             const updated = prev.map((channel: Channel) =>
-                channel.id === id ? {...channel, ...patch} : channel
+                channel.id === internal_id ? {...channel, ...patch} : channel
             )
             return recalcPositions(updated)
         })
@@ -345,10 +351,11 @@ export default function ChannelListRoute() {
             }
             </tbody>
             <tfoot>
-            <tr>
-                <td colSpan={4} className={styles.actionrow}>
-                    <Button onClick={addChannel}>Kanal hinzufügen</Button>
+                <tr>
+                    <td colSpan={3} className={styles.actionrow}>
                         <Button onClick={handleSubmit} disabled={isSaving}>Speichern</Button>
+                        <Button onClick={addChannel} secondary>Kanal hinzufügen</Button>
+
                         {isSaving && progress && (
                             <p>{progress.message} ({progress.current}/{progress.total})</p>
                         )}

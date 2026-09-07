@@ -6,12 +6,13 @@ import BaseService from './BaseService.ts'
  * Needs to be the same as the DTO in the backend
  */
 export interface Channel {
-    id: string | null
+    id: string
     position: number
     name: string
     type: string
     topic: string | null
     parentId: string | null
+    isNew: boolean
 }
 
 export interface ProgressEvent {
