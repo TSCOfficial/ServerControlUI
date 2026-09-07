@@ -2,6 +2,8 @@ import './App.css'
 import { Outlet } from "react-router"
 import Header from "./components/Header.tsx";
 import {ToastProvider} from "./components/ToastContext.tsx";
+import Footer from "./components/Footer.tsx";
+import Navigation from "./components/Navigation.tsx";
 
 function App() {
 
@@ -9,11 +11,11 @@ function App() {
       <>
           <ToastProvider>
               <Header />
-              <nav>No content</nav>
+              <Navigation/>
               <main>
                   <Outlet />
               </main>
-              <footer>No content</footer>
+              <Footer/>
           </ToastProvider>
       </>
   )
