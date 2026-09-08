@@ -16,7 +16,7 @@ interface ToastContextValue {
 }
 
 const ToastContext = createContext<ToastContextValue | null>(null)
-const DEFAULT_DURATION = 4000
+const DEFAULT_DURATION = 8000
 
 export function ToastProvider({children}: { children: ReactNode }) {
     const [toasts, setToasts] = useState<ToastItem[]>([])
