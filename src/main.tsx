@@ -4,6 +4,7 @@ import './index.css'
 import App from './App.tsx'
 import {createBrowserRouter, RouterProvider} from "react-router";
 import ChannelListRoute from "./routes/ChannelListRoute.tsx";
+import RolesRoute from "./routes/RolesRoute.tsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
           {
               index: true,
               element: <ChannelListRoute />
+          },
+          {
+              path: "/roles",
+              element: <RolesRoute/>
           }
       ]
   },
