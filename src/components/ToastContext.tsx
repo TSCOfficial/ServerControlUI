@@ -1,4 +1,3 @@
-// src/context/ToastContext.tsx
 import {createContext, useCallback, useContext, useRef, useState, type ReactNode} from "react"
 import Toast from "./Toast.tsx"
 import styles from "./Toast.module.css"

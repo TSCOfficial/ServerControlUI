@@ -353,8 +353,8 @@ export default function ChannelListRoute() {
             <tfoot>
                 <tr>
                     <td colSpan={3} className={styles.actionrow}>
-                        <Button onClick={handleSubmit} disabled={isSaving}>Speichern</Button>
-                        <Button onClick={addChannel} secondary>Kanal hinzufügen</Button>
+                        <Button onClick={handleSubmit} disabled={isSaving || channels.length == 0}>Speichern</Button>
+                        <Button onClick={addChannel} secondary disabled={channels.length == 0}>Kanal hinzufügen</Button>
 
                         {isSaving && progress && (
                             <p>{progress.message} ({progress.current}/{progress.total})</p>
