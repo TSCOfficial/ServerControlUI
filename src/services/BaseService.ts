@@ -1,3 +1,10 @@
+export interface ProgressEvent {
+    step: string
+    current: number
+    total: number
+    message: string
+}
+
 export default class BaseService {
 
     baseUrl: string = 'http://localhost:8080/api';
@@ -39,7 +46,9 @@ export default class BaseService {
             console.log("Response status", response.status)
             if (response.status === 204) return
 
-            return await response.json()
+            const json = await response.json();
+            console.log("Response: ", json)
+            return json;
         } catch (error:any) {
             console.error(error.message);
         }

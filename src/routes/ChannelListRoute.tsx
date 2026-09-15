@@ -2,8 +2,9 @@ import styles from "./ChannelList.module.css"
 import Button from "../components/Button.tsx"
 import TextInput from "../components/TextInput.tsx"
 import {useEffect, useState} from "react";
-import ChannelService, {type Channel, type ProgressEvent} from "../services/ChannelService.ts";
+import ChannelService, {type Channel} from "../services/ChannelService.ts";
 import {useToast} from "../components/ToastContext.tsx";
+import type {ProgressEvent} from "../services/BaseService.ts";
 
 const CHANNEL_TYPES = ["TEXT", "VOICE", "CATEGORY", "FORUM", "STAGE", "NEWS"]
 
@@ -23,10 +24,9 @@ export default function ChannelListRoute() {
     /** Whether the channels are being saved currently */
     const [isSaving, setIsSaving] = useState(false)
 
-    const [collapsedCategories, setCollapsedCategories] = useState<Channel[]>([])
-
     useEffect(() => {
         channelService.getChannels(guildId).then((channels: Channel[]) => {
+            console.log("rerender");
             if (channels === undefined || channels.length === 0) {
                 showToast("Keine Kanäle gefunden", "warning")
             }
@@ -143,14 +143,16 @@ export default function ChannelListRoute() {
                 </tr>
             )
         }
-        let currentCategory: Channel | null = null;
 
-        return channels.filter(channel => !collapsedCategories.includes(channel) || channel.type === "CATEGORY").map((channel: Channel, index: number) => {
+        let currentCategory: Channel | null = null
+        return channels.map((channel: Channel, index: number) => {
             let isCategory = false;
             if (channel.type === "CATEGORY") {
                 isCategory = true;
                 currentCategory = channel;
             }
+
+
             const rowClasses = isCategory ? styles.category + " " : "" +
                 (currentCategory != null ? currentCategory.id + " " : "")
 
@@ -204,7 +206,7 @@ export default function ChannelListRoute() {
                     </td>
                     <td>
                         {
-                            isCategory ? displayCategoryActionRow(channel) : displayChannelTopic(channel)
+                            isCategory ? "" : displayChannelTopic(channel)
                         }
                     </td>
                 </tr>
@@ -221,26 +223,6 @@ export default function ChannelListRoute() {
                 onChange={e => updateChannel(channel.id, {topic: e.target.value})}
                 inputAtHover
             />
-        )
-    }
-
-    function displayCategoryActionRow(channel: Channel) {
-        onclick = () => {
-            if (channel.id != null) {
-                setCollapsedCategories(prev => prev.includes(channel) ? prev.filter(c => c.id != channel.id) : [...prev, channel])
-                console.log(collapsedCategories)
-                setChannels(channels)
-            }
-
-        }
-        return (
-            <div>
-                <Button secondary onClick={() => onclick}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-chevron-up" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"/>
-                    </svg>
-                </Button>
-            </div>
         )
     }
 
@@ -352,12 +334,14 @@ export default function ChannelListRoute() {
             </tbody>
             <tfoot>
                 <tr>
-                    <td colSpan={3} className={styles.actionrow}>
-                        <Button onClick={handleSubmit} disabled={isSaving || channels.length == 0}>Speichern</Button>
-                        <Button onClick={addChannel} secondary disabled={channels.length == 0}>Kanal hinzufügen</Button>
+                    <td colSpan={3}>
+                        <div className={styles.actionrow}>
+                            <Button onClick={handleSubmit} disabled={isSaving || channels.length == 0}>Speichern</Button>
+                            <Button onClick={addChannel} secondary disabled={channels.length == 0}>Kanal hinzufügen</Button>
+                        </div>
 
                         {isSaving && progress && (
-                            <p>{progress.message} ({progress.current}/{progress.total})</p>
+                            <span>{progress.message} ({progress.current}/{progress.total})</span>
                         )}
                     </td>
                 </tr>

@@ -1,4 +1,5 @@
 import BaseService from './BaseService.ts'
+import type {ProgressEvent} from "./BaseService.ts";
 
 /**
  * Represents the structure of a channel
@@ -13,13 +14,6 @@ export interface Channel {
     topic: string | null
     parentId: string | null
     isNew: boolean
-}
-
-export interface ProgressEvent {
-    step: string
-    current: number
-    total: number
-    message: string
 }
 
 export default class ChannelService extends BaseService {
