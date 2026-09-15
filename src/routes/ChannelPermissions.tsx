@@ -33,7 +33,7 @@ export default function ChannelPermissions() {
     const groupedChannels = new Map();
     const uncategorizedKey = "!{ChannelUncategorized}"
     channels.forEach(channel => {
-        if (channel.parentId === null && channel.type != "CATEGORY") {
+        if (channel.parent === null && channel.type != "CATEGORY") {
             // Fallback for uncategorized channels
             const prev :Channel[] = groupedChannels.get(uncategorizedKey)
             console.log(prev)
@@ -49,8 +49,8 @@ export default function ChannelPermissions() {
             groupedChannels.set(channel.id, [])
             return;
         } else {
-            const prev :Channel[] = groupedChannels.get(channel.parentId)
-            groupedChannels.set(channel.parentId, [...prev, channel])
+            const prev :Channel[] = groupedChannels.get(channel.parent?.id)
+            groupedChannels.set(channel.parent?.id, [...prev, channel])
             return;
         }
     })
@@ -59,7 +59,8 @@ export default function ChannelPermissions() {
     groupedChannels.forEach((channels: Channel[], category: Channel) => {
         console.log("categories: ", category)
         console.log("channels: ", channels)
-        XAxis.addChild([category.name], [
+        // @ts-ignore
+        XAxis.addChild([channels?.at(0)?.parent ? channels?.at(0)?.parent?.name : "Unkategoirisiert"], [
             new Axis().setAxis(
                 channels.map((channel: Channel) => {
                     return channel.name

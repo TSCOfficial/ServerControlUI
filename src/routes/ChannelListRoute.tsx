@@ -39,7 +39,7 @@ export default function ChannelListRoute() {
     function addChannel() {
         setChannels((prev: Channel[]) => [
             ...prev,
-            {id: (Math.random() * 100).toString(), position: prev.length, name: "", type: "TEXT", topic: "", parentId: null, isNew: true},
+            {id: (Math.random() * 100).toString(), position: prev.length, name: "", type: "TEXT", topic: "", parent: null, isNew: true},
         ])
     }
 

@@ -1,0 +1,10 @@
+.treeTable {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    /*grid-template-rows: repeat(auto-fill, minmax(1rem, 1fr));*/
+}
+
+/*.category {*/
+/*    grid-column: 1 / auto;*/
+/*}*/

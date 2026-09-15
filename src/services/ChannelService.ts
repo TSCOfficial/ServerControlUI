@@ -12,7 +12,7 @@ export interface Channel {
     name: string
     type: string
     topic: string | null
-    parentId: string | null
+    parent: Channel | null
     isNew: boolean
 }
 
