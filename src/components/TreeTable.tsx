@@ -56,12 +56,12 @@ export default function TreeTable({ x, y }: TreeTableProps) {
 
                         return child.value?.map((value: string) => {
                             childrenCount++;
-                            return <span style={{gridRow: "2"}}>{value}</span>
+                            return <span style={{gridRow: "2", padding: "2px 8px 2px 4px"}}>{value}</span>
                         })
                     })
                     currentX++;
                     return <>
-                        <span style={{gridColumn: "auto / " + childrenCount + " span", gridRow: "1"}}>{category.value?.join(", ")}</span>
+                        <span style={{gridColumn: "auto / " + childrenCount + " span", gridRow: "1", padding: "2px 8px 2px 4px"}}>{category.value?.join(", ")}</span>
                         {children}
                     </>
                 })
