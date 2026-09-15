@@ -26,7 +26,6 @@ export default function ChannelListRoute() {
 
     useEffect(() => {
         channelService.getChannels(guildId).then((channels: Channel[]) => {
-            console.log("rerender");
             if (channels === undefined || channels.length === 0) {
                 showToast("Keine Kanäle gefunden", "warning")
             }

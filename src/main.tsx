@@ -5,6 +5,7 @@ import App from './App.tsx'
 import {createBrowserRouter, RouterProvider} from "react-router";
 import ChannelListRoute from "./routes/ChannelListRoute.tsx";
 import RolesRoute from "./routes/RolesRoute.tsx";
+import ChannelPermissions from "./routes/ChannelPermissions.tsx";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
           {
               index: true,
               element: <ChannelListRoute />
+          },
+          {
+              path: "/perms",
+              element: <ChannelPermissions/>
           },
           {
               path: "/roles",

@@ -23,7 +23,6 @@ export default class ChannelService extends BaseService {
     }
 
     getChannels(guildId: string) {
-        console.log("Fetching channels from guildId", guildId);
         return this.fetch(guildId)
     }
 

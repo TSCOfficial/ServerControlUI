@@ -43,12 +43,9 @@ export default class BaseService {
             }
 
             // return empty body if status is 204 (no content
-            console.log("Response status", response.status)
             if (response.status === 204) return
 
-            const json = await response.json();
-            console.log("Response: ", json)
-            return json;
+            return await response.json();
         } catch (error:any) {
             console.error(error.message);
         }
