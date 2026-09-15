@@ -46,22 +46,22 @@ interface TreeTableProps {
  * @constructor
  */
 export default function TreeTable({ x, y }: TreeTableProps) {
-    let currentY: number = 0;
+    let currentX: number = 0;
     return (
         <div className={styles.treeTable}>
             {
                 x.children?.map((category: Axis) => {
                     let childrenCount = 0;
                     const children = category.children?.map((child: Axis) => {
-                        currentY++;
+
                         return child.value?.map((value: string) => {
                             childrenCount++;
-                            return <span style={{gridRow: "1 / 1"}}>{value}</span>
+                            return <span style={{gridRow: "2"}}>{value}</span>
                         })
                     })
-
+                    currentX++;
                     return <>
-                        <span style={{gridColumn: currentY + " / " + childrenCount}}>{category.value?.join(", ")}</span>
+                        <span style={{gridColumn: "auto / " + childrenCount + " span", gridRow: "1"}}>{category.value?.join(", ")}</span>
                         {children}
                     </>
                 })
