@@ -50,6 +50,7 @@ export default function TreeTable({ x, y }: TreeTableProps) {
     return (
         <div className={styles.treeTable}>
             {
+                // X-Axis
                 x.children?.map((category: Axis) => {
                     let childrenCount = 0;
                     const children = category.children?.map((child: Axis) => {
