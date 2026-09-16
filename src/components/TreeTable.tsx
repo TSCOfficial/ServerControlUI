@@ -75,6 +75,14 @@ export default function TreeTable({ x, y, data}: TreeTableProps) {
         </div>
     )
 
+    function fillEmptySpace() {
+        const table = document.getElementsByClassName(styles.treeTable).item(0)
+        // todo count maximum cells on each axis
+        // todo save the set positions of existing cells
+        // todo remove occupied cells from cell-grid
+        // todo go through cell-grid and set default cell element
+    }
+
     function generateDataCells(data: TableData[]) {
         if (data == null) return;
         return data.map((cellData) => {
