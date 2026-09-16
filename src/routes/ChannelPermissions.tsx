@@ -43,11 +43,11 @@ export default function ChannelPermissions() {
             return;
         }
     })
-    const XAxis: Axis = new Axis();
+    const xAxis: Axis = new Axis();
 
     console.log("Grouped channels: ", groupedChannels)
 
-    XAxis.addChild("", "Berechtigung / Kategorie", [
+    xAxis.addChild("", "Berechtigung / Kategorie", [
         new Axis().setAxis("permission-category", "Berechtigungsgruppe"),
         new Axis().setAxis("permission", "Berechtigung / Kanal")
     ])
@@ -56,18 +56,32 @@ export default function ChannelPermissions() {
         const category = channels.at(0)?.parent
         console.log("category object: ", category)
         // @ts-ignore
-        XAxis.addChild(category?.id, category ? category.name : "Unkategoirisiert",
+        xAxis.addChild(category?.id, category ? category.name : "Unkategoirisiert",
             channels.map((channel: Channel) => {
                 return new Axis().setAxis(channel.id, channel.name);
             })
         )
     })
 
+    const yAxis: Axis = new Axis();
+    yAxis.addChild("PermGr1", "PermissionGr 1", [
+        new Axis().setAxis("Permission1", "Permission1"),
+        new Axis().setAxis("Permission2", "Permission2"),
+        new Axis().setAxis("Permission3", "Permission3"),
+        new Axis().setAxis("Permission4", "Permission4"),
+    ])
+    yAxis.addChild("PermGr2", "PermissionGr 2", [
+        new Axis().setAxis("Permission2.1", "Permission5"),
+        new Axis().setAxis("Permission2.2", "Permission6"),
+        new Axis().setAxis("Permission2.3", "Permission7"),
+        new Axis().setAxis("Permission2.4", "Permission8"),
+    ])
+
     return (
         <>
             <h1>Berechtigungen</h1>
 
-            <TreeTable x={XAxis} y={new Axis()}/>
+            <TreeTable x={xAxis} y={yAxis}/>
         </>
     )
 }

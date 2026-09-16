@@ -45,26 +45,55 @@ interface TreeTableProps {
 
 /**
  * The tree-table allows to create a table, that has multiple grouped layers on the X & Y Axis
+ * <p>
+ *     The x-Axis defines all headers of the table where as the y-Axis only adds more context for the data rows
+ * </p>
+ * @param x x-Axis
+ * @param y y-Axis
  * @constructor
  */
 export default function TreeTable({ x, y }: TreeTableProps) {
-    let currentX: number = 0;
-    console.log("X Axis: ", x)
+    let currentY: number = 2; // 2 bc of the header
+    console.log("Y Axis: ", y)
     return (
         <div className={styles.treeTable}>
             {
                 // X-Axis
                 x.children?.map((category: Axis) => {
                     let childrenCount = 0;
-                    console.log("category: ", category);
                     const children = category.children?.map((child: Axis) => {
                         childrenCount++;
-                        console.log("child: ", child);
                         return <span style={{gridRow: "2", padding: "2px 8px 2px 4px"}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
                     })
-                    currentX++;
                     return <>
                         <span style={{gridColumn: "auto / " + childrenCount + " span", gridRow: "1", padding: "2px 8px 2px 4px"}} data-row={1} className={styles.cell}>{category.value}</span>
+                        {children}
+                    </>
+                })
+            }
+            {
+                // y-Axis
+                y.children?.map((category: Axis) => {
+                    console.log("category: ", category);
+
+                    const group = {
+                        currentY++;
+                    <span style={{
+                        gridColumn: "1",
+                        gridRow: currentY + " / " + category.children?.length + " span",
+                        padding: "2px 8px 2px 4px"
+                    }} data-row={1} className={styles.cell}>{category.value}</span>
+                }
+
+                    const children = category.children?.map((child: Axis) => {
+                        currentY++;
+                        console.log("child: ", child);
+                        return <span style={{gridRow: currentY, gridColumn: "2", padding: "2px 8px 2px 4px"}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
+                    })
+
+                    console.log("y: ", headerRowCount + currentY)
+                    return <>
+                        {group}
                         {children}
                     </>
                 })
