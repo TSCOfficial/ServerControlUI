@@ -16,3 +16,10 @@
 .cell[data-row="2"]{
     background-color: #eaeaea;
 }
+
+.cell[data-col="1"]{
+    background-color: lightgray;
+}
+.cell[data-col="2"]{
+    background-color: #eaeaea;
+}

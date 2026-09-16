@@ -70,16 +70,16 @@ export default function TreeTable({ x, y, data}: TreeTableProps) {
                 generateYAxis(y)
             }
             {
-                generateDataCells(x, y, data)
+                generateDataCells(data)
             }
         </div>
     )
 
-    function generateDataCells(x: number, y: number, data: TableData[]) {
+    function generateDataCells(data: TableData[]) {
         if (data == null) return;
-        return data.map((cellData, i) => {
-            const columnPosition = getXAxisPosition(x, cellData);
-            const rowPosition = getYAxisPosition(y, cellData);
+        return data.map((cellData) => {
+            const columnPosition = getXAxisPosition(cellData);
+            const rowPosition = getYAxisPosition(cellData);
 
             return (
                 <span style={{gridColumn: columnPosition, gridRow: rowPosition}} className={styles.cell}>
@@ -95,13 +95,13 @@ export default function TreeTable({ x, y, data}: TreeTableProps) {
      * @param x x-Axis-identifier
      * @param data
      */
-    function getXAxisPosition(x: number, data?: TableData) {
+    function getXAxisPosition(data?: TableData) {
         const xAxisAnchor = document.getElementById(data.x);
         const columnPosition = xAxisAnchor?.style.gridColumn;
         return columnPosition
     }
 
-    function getYAxisPosition(y: number, data?: TableData) {
+    function getYAxisPosition(data?: TableData) {
         const yAxisAnchor = document.getElementById(data.y);
         const rowPosition = yAxisAnchor?.style.gridRow;
         return rowPosition;
@@ -110,14 +110,14 @@ export default function TreeTable({ x, y, data}: TreeTableProps) {
     function generateXAxis(x: Axis) {
         return x.children?.map((category: Axis) => {
             const group = (
-                <span style={{gridColumnStart: currentX, gridColumnEnd: currentX + category.children?.length, gridRow: "1"}} data-row={1} className={styles.cell}>
+                <span style={{gridColumnStart: currentX, gridColumnEnd: currentX + category.children?.length, gridRow: "1"}} data-col={currentX} data-row={1} className={styles.cell}>
                             {category.value}
                         </span>
             )
 
             const children = category.children?.map((child: Axis) => {
                 const cell = (
-                    <span style={{gridRow: "2", gridColumn: currentX}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
+                    <span style={{gridRow: "2", gridColumn: currentX}} data-col={currentX} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
                 )
                 currentX++;
                 return cell;
@@ -135,12 +135,12 @@ export default function TreeTable({ x, y, data}: TreeTableProps) {
                 <span style={{
                     gridColumn: "1",
                     gridRow: currentY + " / " + category.children?.length + " span",
-                }} className={styles.cell}>{category.value}</span>
+                }} className={styles.cell} data-col={1} data-row={currentY}>{category.value}</span>
             )
 
             const children = category.children?.map((child: Axis) => {
                 const cell = (
-                    <span style={{gridRow: currentY, gridColumn: "2"}} className={styles.cell} id={child.key}>{child.value}</span>
+                    <span style={{gridRow: currentY, gridColumn: "2"}} className={styles.cell} data-col={2} data-row={currentY} id={child.key}>{child.value}</span>
                 )
                 currentY++;
                 return cell
