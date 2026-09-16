@@ -1,5 +1,4 @@
 import styles from "./TreeTable.module.css";
-import {useState} from "react";
 
 /**
  * This interface defines an axis with either direcly list of values, or axis-children, which result in grouping
@@ -53,20 +52,29 @@ interface TreeTableProps {
  * @constructor
  */
 export default function TreeTable({ x, y }: TreeTableProps) {
-    let currentY: number = 2; // 2 bc of the header
+    let currentX: number = 1;
+    let currentY: number = x.children?.length || 0;
     console.log("Y Axis: ", y)
     return (
         <div className={styles.treeTable}>
             {
                 // X-Axis
                 x.children?.map((category: Axis) => {
-                    let childrenCount = 0;
+                    const group = (
+                        <span style={{gridColumnStart: currentX, gridColumnEnd: currentX + category.children?.length, gridRow: "1"}} data-row={1} className={styles.cell}>
+                            {category.value}
+                        </span>
+                    )
+
                     const children = category.children?.map((child: Axis) => {
-                        childrenCount++;
-                        return <span style={{gridRow: "2", padding: "2px 8px 2px 4px"}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
+                        const cell = (
+                            <span style={{gridRow: "2", gridColumn: currentX}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
+                        )
+                        currentX++;
+                        return cell;
                     })
                     return <>
-                        <span style={{gridColumn: "auto / " + childrenCount + " span", gridRow: "1", padding: "2px 8px 2px 4px"}} data-row={1} className={styles.cell}>{category.value}</span>
+                        {group}
                         {children}
                     </>
                 })
@@ -76,22 +84,24 @@ export default function TreeTable({ x, y }: TreeTableProps) {
                 y.children?.map((category: Axis) => {
                     console.log("category: ", category);
 
-                    const group = {
-                        currentY++;
+                    console.log(category.children?.length);
+                    const group = (
                     <span style={{
                         gridColumn: "1",
                         gridRow: currentY + " / " + category.children?.length + " span",
-                        padding: "2px 8px 2px 4px"
-                    }} data-row={1} className={styles.cell}>{category.value}</span>
-                }
+                    }} className={styles.cell}>{category.value}</span>
+                )
 
                     const children = category.children?.map((child: Axis) => {
+                        const cell = (
+                            <span style={{gridRow: currentY, gridColumn: "2"}} className={styles.cell} id={child.key}>{child.value}</span>
+                        )
                         currentY++;
                         console.log("child: ", child);
-                        return <span style={{gridRow: currentY, gridColumn: "2", padding: "2px 8px 2px 4px"}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
+                        return cell
                     })
 
-                    console.log("y: ", headerRowCount + currentY)
+                    console.log("y: ", currentY)
                     return <>
                         {group}
                         {children}
