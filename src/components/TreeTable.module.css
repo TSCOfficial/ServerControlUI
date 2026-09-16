@@ -1,10 +1,17 @@
 .treeTable {
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: repeat(auto-fill, minmax(8rem, auto));
     white-space: nowrap;
+    width: fit-content;
 }
 
-/*.category {*/
-/*    grid-column: 1 / auto;*/
-/*}*/
+.cell {
+    border: 1px solid black;
+}
+
+.cell[data-row="1"]{
+    background-color: lightgray;
+}
+.cell[data-row="2"]{
+    background-color: #eaeaea;
+}

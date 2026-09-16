@@ -10,15 +10,6 @@ const guildId = "1004035867679129662"
 export default function ChannelPermissions() {
     const {showToast} = useToast()
 
-    const xAxis = new Axis().setAxis(undefined, [
-        new Axis().setAxis(["Cat1"], [
-            new Axis().setAxis(["Channel1", "Channel2"]),
-        ]),
-        new Axis().setAxis(["Cat2"], [
-            new Axis().setAxis(["Channel3", "Channel4", "Channel5"]),
-        ])
-    ])
-
     const [channels, setChannels] = useState<Channel[]>([])
 
     useEffect(() => {
@@ -36,9 +27,7 @@ export default function ChannelPermissions() {
         if (channel.parent === null && channel.type != "CATEGORY") {
             // Fallback for uncategorized channels
             const prev :Channel[] = groupedChannels.get(uncategorizedKey)
-            console.log(prev)
-            console.log("parent = null, type != category:", channel)
-            if (prev !== undefined) {
+            if (prev != undefined) {
                 groupedChannels.set(uncategorizedKey, [...prev, channel])
             } else {
                 groupedChannels.set(uncategorizedKey, [channel])
@@ -49,24 +38,29 @@ export default function ChannelPermissions() {
             groupedChannels.set(channel.id, [])
             return;
         } else {
-            const prev :Channel[] = groupedChannels.get(channel.parent?.id)
+            const prev :Channel[] = groupedChannels.get(channel.parent?.id) || []
             groupedChannels.set(channel.parent?.id, [...prev, channel])
             return;
         }
     })
     const XAxis: Axis = new Axis();
 
-    groupedChannels.forEach((channels: Channel[], category: Channel) => {
-        console.log("categories: ", category)
-        console.log("channels: ", channels)
+    console.log("Grouped channels: ", groupedChannels)
+
+    XAxis.addChild("", "Berechtigung / Kategorie", [
+        new Axis().setAxis("permission-category", "Berechtigungsgruppe"),
+        new Axis().setAxis("permission", "Berechtigung / Kanal")
+    ])
+
+    groupedChannels.forEach((channels: Channel[]) => {
+        const category = channels.at(0)?.parent
+        console.log("category object: ", category)
         // @ts-ignore
-        XAxis.addChild([channels?.at(0)?.parent ? channels?.at(0)?.parent?.name : "Unkategoirisiert"], [
-            new Axis().setAxis(
-                channels.map((channel: Channel) => {
-                    return channel.name
-                })
-            )
-        ])
+        XAxis.addChild(category?.id, category ? category.name : "Unkategoirisiert",
+            channels.map((channel: Channel) => {
+                return new Axis().setAxis(channel.id, channel.name);
+            })
+        )
     })
 
     return (

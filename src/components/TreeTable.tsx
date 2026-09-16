@@ -5,17 +5,19 @@ import {useState} from "react";
  * This interface defines an axis with either direcly list of values, or axis-children, which result in grouping
  */
 export class Axis {
-    value?: string[] = []
+    key: string = "";
+    value?: string;
     children?: Axis[] = []
 
-    setAxis(value?: string[], children?: Axis[]): Axis {
+    setAxis(key: string, value?: string, children?: Axis[]): Axis {
+        this.key = key;
         this.value = value
         this.children = children;
         return this;
     }
 
-    addChild(value: string[], children: Axis[]) {
-        const childAxis = new Axis().setAxis(value, children);
+    addChild(key: string, value?: string, children?: Axis[]) {
+        const childAxis = new Axis().setAxis(key, value, children);
         this.children?.push(childAxis);
     }
 }
@@ -47,22 +49,22 @@ interface TreeTableProps {
  */
 export default function TreeTable({ x, y }: TreeTableProps) {
     let currentX: number = 0;
+    console.log("X Axis: ", x)
     return (
         <div className={styles.treeTable}>
             {
                 // X-Axis
                 x.children?.map((category: Axis) => {
                     let childrenCount = 0;
+                    console.log("category: ", category);
                     const children = category.children?.map((child: Axis) => {
-
-                        return child.value?.map((value: string) => {
-                            childrenCount++;
-                            return <span style={{gridRow: "2", padding: "2px 8px 2px 4px"}}>{value}</span>
-                        })
+                        childrenCount++;
+                        console.log("child: ", child);
+                        return <span style={{gridRow: "2", padding: "2px 8px 2px 4px"}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
                     })
                     currentX++;
                     return <>
-                        <span style={{gridColumn: "auto / " + childrenCount + " span", gridRow: "1", padding: "2px 8px 2px 4px"}}>{category.value?.join(", ")}</span>
+                        <span style={{gridColumn: "auto / " + childrenCount + " span", gridRow: "1", padding: "2px 8px 2px 4px"}} data-row={1} className={styles.cell}>{category.value}</span>
                         {children}
                     </>
                 })
