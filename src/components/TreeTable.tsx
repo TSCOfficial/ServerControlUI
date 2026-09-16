@@ -81,11 +81,20 @@ export default function TreeTable({ x, y, data}: TreeTableProps) {
             const columnPosition = getXAxisPosition(cellData);
             const rowPosition = getYAxisPosition(cellData);
 
-            return (
-                <span style={{gridColumn: columnPosition, gridRow: rowPosition}} className={styles.cell}>
-                    {cellData?.data}
+            if (cellData?.data != null) {
+                return (
+                    <span style={{gridColumn: columnPosition, gridRow: rowPosition}} className={styles.cell}>
+                        {cellData?.data}
+                    </span>
+                )
+            } else {
+                return (
+                    <span style={{gridColumn: columnPosition, gridRow: rowPosition}} className={styles.cell + " " + styles.disabled}>
+                    disabled
                 </span>
-            )
+                )
+            }
+
         })
 
     }

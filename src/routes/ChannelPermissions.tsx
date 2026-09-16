@@ -77,7 +77,8 @@ export default function ChannelPermissions() {
     const data: TableData[] = []
     data.push(
         new TableData("1050898590857445417", "Permission2", <span>Data</span>),
-        new TableData("1149358621692547182", "Permission2.2", <span>hihihihihihihi</span>)
+        new TableData("1149358621692547182", "Permission2.2", <input type={"radio"}/>),
+        new TableData("1518910137870454805", "Permission2.2", null)
     )
 
     return (

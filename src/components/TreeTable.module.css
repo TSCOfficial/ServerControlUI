@@ -10,6 +10,11 @@
     padding: 2px 8px 2px 4px;
 }
 
+.cell.disabled {
+    background-color: red;
+    cursor: not-allowed;
+}
+
 .cell[data-row="1"]{
     background-color: lightgray;
 }
