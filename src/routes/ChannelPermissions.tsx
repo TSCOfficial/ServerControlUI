@@ -1,4 +1,4 @@
-import TreeTable, {Axis} from "../components/TreeTable.tsx";
+import TreeTable, {Axis, TableData} from "../components/TreeTable.tsx";
 import {useEffect, useState} from "react";
 import ChannelService, {type Channel} from "../services/ChannelService.ts";
 import {useToast} from "../components/ToastContext.tsx";
@@ -45,8 +45,6 @@ export default function ChannelPermissions() {
     })
     const xAxis: Axis = new Axis();
 
-    console.log("Grouped channels: ", groupedChannels)
-
     xAxis.addChild("", "Berechtigung / Kategorie", [
         new Axis().setAxis("permission-category", "Berechtigungsgruppe"),
         new Axis().setAxis("permission", "Berechtigung / Kanal")
@@ -54,7 +52,6 @@ export default function ChannelPermissions() {
 
     groupedChannels.forEach((channels: Channel[]) => {
         const category = channels.at(0)?.parent
-        console.log("category object: ", category)
         // @ts-ignore
         xAxis.addChild(category?.id, category ? category.name : "Unkategoirisiert",
             channels.map((channel: Channel) => {
@@ -77,11 +74,17 @@ export default function ChannelPermissions() {
         new Axis().setAxis("Permission2.4", "Permission8"),
     ])
 
+    const data: TableData[] = []
+    data.push(
+        new TableData("1050898590857445417", "Permission2", <span>Data</span>),
+        new TableData("1149358621692547182", "Permission2.2", <span>hihihihihihihi</span>)
+    )
+
     return (
         <>
             <h1>Berechtigungen</h1>
 
-            <TreeTable x={xAxis} y={yAxis}/>
+            <TreeTable x={xAxis} y={yAxis} data={data} />
         </>
     )
 }

@@ -1,4 +1,6 @@
 import styles from "./TreeTable.module.css";
+import  {type ReactNode} from "react";
+import * as React from "react";
 
 /**
  * This interface defines an axis with either direcly list of values, or axis-children, which result in grouping
@@ -21,18 +23,20 @@ export class Axis {
     }
 }
 
-class TableData {
-    x1: number = 0;
-    y1: number = 0;
-    x2: number = 0;
-    y2: number = 0;
-    data: any;
+/**
+ * table data structure for the tree table
+ * @param x x-Axis identifier
+ * @param y y-Axis identifier
+ * @param data the data to display (as {@link ReactNode}) if the data is null, the cell is marked as disabled
+ */
+export class TableData {
+    x: string = "";
+    y: string = "";
+    data: ReactNode = null;
 
-    TableData(x1: number, y1: number, x2: number, y2: number, data: any) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
+    constructor(x: string, y: string, data: ReactNode) {
+        this.x = x;
+        this.y = y;
         this.data = data
     }
 }
@@ -40,6 +44,7 @@ class TableData {
 interface TreeTableProps {
     x: Axis
     y: Axis
+    data: TableData[]
 }
 
 /**
@@ -51,63 +56,100 @@ interface TreeTableProps {
  * @param y y-Axis
  * @constructor
  */
-export default function TreeTable({ x, y }: TreeTableProps) {
+export default function TreeTable({ x, y, data}: TreeTableProps) {
     let currentX: number = 1;
     let currentY: number = x.children?.length || 0;
-    console.log("Y Axis: ", y)
     return (
         <div className={styles.treeTable}>
             {
                 // X-Axis
-                x.children?.map((category: Axis) => {
-                    const group = (
-                        <span style={{gridColumnStart: currentX, gridColumnEnd: currentX + category.children?.length, gridRow: "1"}} data-row={1} className={styles.cell}>
-                            {category.value}
-                        </span>
-                    )
-
-                    const children = category.children?.map((child: Axis) => {
-                        const cell = (
-                            <span style={{gridRow: "2", gridColumn: currentX}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
-                        )
-                        currentX++;
-                        return cell;
-                    })
-                    return <>
-                        {group}
-                        {children}
-                    </>
-                })
+                generateXAxis(x)
             }
             {
                 // y-Axis
-                y.children?.map((category: Axis) => {
-                    console.log("category: ", category);
-
-                    console.log(category.children?.length);
-                    const group = (
-                    <span style={{
-                        gridColumn: "1",
-                        gridRow: currentY + " / " + category.children?.length + " span",
-                    }} className={styles.cell}>{category.value}</span>
-                )
-
-                    const children = category.children?.map((child: Axis) => {
-                        const cell = (
-                            <span style={{gridRow: currentY, gridColumn: "2"}} className={styles.cell} id={child.key}>{child.value}</span>
-                        )
-                        currentY++;
-                        console.log("child: ", child);
-                        return cell
-                    })
-
-                    console.log("y: ", currentY)
-                    return <>
-                        {group}
-                        {children}
-                    </>
-                })
+                generateYAxis(y)
+            }
+            {
+                generateDataCells(x, y, data)
             }
         </div>
     )
+
+    function generateDataCells(x: number, y: number, data: TableData[]) {
+        if (data == null) return;
+        return data.map((cellData, i) => {
+            const columnPosition = getXAxisPosition(x, cellData);
+            const rowPosition = getYAxisPosition(y, cellData);
+
+            return (
+                <span style={{gridColumn: columnPosition, gridRow: rowPosition}} className={styles.cell}>
+                    {cellData?.data}
+                </span>
+            )
+        })
+
+    }
+
+    /**
+     * Get the position for the datacell based by its x-identifier
+     * @param x x-Axis-identifier
+     * @param data
+     */
+    function getXAxisPosition(x: number, data?: TableData) {
+        const xAxisAnchor = document.getElementById(data.x);
+        const columnPosition = xAxisAnchor?.style.gridColumn;
+        return columnPosition
+    }
+
+    function getYAxisPosition(y: number, data?: TableData) {
+        const yAxisAnchor = document.getElementById(data.y);
+        const rowPosition = yAxisAnchor?.style.gridRow;
+        return rowPosition;
+    }
+
+    function generateXAxis(x: Axis) {
+        return x.children?.map((category: Axis) => {
+            const group = (
+                <span style={{gridColumnStart: currentX, gridColumnEnd: currentX + category.children?.length, gridRow: "1"}} data-row={1} className={styles.cell}>
+                            {category.value}
+                        </span>
+            )
+
+            const children = category.children?.map((child: Axis) => {
+                const cell = (
+                    <span style={{gridRow: "2", gridColumn: currentX}} data-row={2} className={styles.cell} id={child.key}>{child.value}</span>
+                )
+                currentX++;
+                return cell;
+            })
+            return <>
+                {group}
+                {children}
+            </>
+        })
+    }
+
+    function generateYAxis(y: Axis) {
+        return y.children?.map((category: Axis) => {
+            const group = (
+                <span style={{
+                    gridColumn: "1",
+                    gridRow: currentY + " / " + category.children?.length + " span",
+                }} className={styles.cell}>{category.value}</span>
+            )
+
+            const children = category.children?.map((child: Axis) => {
+                const cell = (
+                    <span style={{gridRow: currentY, gridColumn: "2"}} className={styles.cell} id={child.key}>{child.value}</span>
+                )
+                currentY++;
+                return cell
+            })
+
+            return <>
+                {group}
+                {children}
+            </>
+        })
+    }
 }
